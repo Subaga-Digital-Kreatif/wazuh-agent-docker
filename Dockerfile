@@ -6,6 +6,7 @@ LABEL description="wazuh-agent as docker container"
 LABEL version="4.12.0-1"
 
 # environment
+ENV DEBIAN_FRONTEND=noninteractive
 ENV AGENT_VERSION=4.12.0-1
 
 COPY entrypoint.sh ossec.conf /
