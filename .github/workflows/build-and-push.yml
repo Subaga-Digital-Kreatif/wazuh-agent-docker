@@ -1,4 +1,4 @@
-name: Build and Push GOsa Container
+name: Build and Push Wazuh-Agent Container
 
 on:
   push:
