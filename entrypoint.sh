@@ -1,7 +1,9 @@
 #!/bin/bash
 
+export PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin
+
 # Start the agent
-/var/ossec/bin/ossec-control start
+systemctl start wazuh-agent.service
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start agent: $status"
@@ -11,7 +13,7 @@ fi
 echo "background jobs running, listening for changes"
 
 while sleep 60; do
-  /var/ossec/bin/ossec-control status > /dev/null 2>&1
+  systemctl status wazuh-agent.service > /dev/null 2>&1
   status=$?
   if [ $status -ne 0 ]; then
     echo "looks like the agent died."
