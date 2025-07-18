@@ -1,9 +1,8 @@
 # Dockerfile
 FROM debian:12-slim
 
-LABEL maintainer="Frank Moeller <moellerf@gmx.net>"
 LABEL description="wazuh-agent as docker container"
-LABEL version="4.12.0-1"
+LABEL version="4.12.0-2"
 
 # environment
 ENV DEBIAN_FRONTEND=noninteractive
