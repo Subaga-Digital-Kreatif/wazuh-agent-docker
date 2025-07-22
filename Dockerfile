@@ -1,33 +1,31 @@
 # Dockerfile
-FROM debian:12-slim
+FROM rockylinux/rockylinux:9
 
 LABEL description="wazuh-agent as docker container"
 LABEL version="4.12.0-3"
 
 # environment
-ENV DEBIAN_FRONTEND=noninteractive
-ENV AGENT_VERSION=4.12.0-1
+ENV AGENT_VERSION=4.12.0
+ENV AGENT_RELEASE=1
 
 COPY entrypoint.sh ossec.conf /
 
 # package installation
-RUN apt-get update && apt-get install -y \
-  mawk \
-  procps \
+RUN dnf update -y && dnf install -y \
+  gawk \
+  procps-ng \
   curl \
   net-tools \
   bash \
-  apt-transport-https \
   gnupg2 \
-  inotify-tools \
-  python3-docker
+  python3-podman
+
+COPY wazuh.repo /etc/yum.repos.d/
   
-RUN curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add - && \
-  echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list && \
-  apt-get update && \
-  apt-get install -y wazuh-agent=${AGENT_VERSION} && \
-  mv /ossec.conf /var/ossec/etc/ && \
-  rm -rf /var/lib/apt/lists/*
+RUN rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH && \
+  dnf update -y && \
+  dnf install -y wazuh-agent-${AGENT_VERSION}-${AGENT_RELEASE} && \
+  mv /ossec.conf /var/ossec/etc/
 
 # entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
