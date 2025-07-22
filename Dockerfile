@@ -14,7 +14,7 @@ COPY entrypoint.sh ossec.conf /
 RUN dnf update -y && dnf install -y \
   gawk \
   procps-ng \
-  curl \
+  curl-minimal \
   net-tools \
   bash \
   gnupg2 \
