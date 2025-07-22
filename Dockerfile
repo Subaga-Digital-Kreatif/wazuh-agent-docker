@@ -2,7 +2,7 @@
 FROM rockylinux/rockylinux:9
 
 LABEL description="wazuh-agent as docker container"
-LABEL version="4.12.0-3"
+LABEL version="4.12.0-4"
 
 # environment
 ENV AGENT_VERSION=4.12.0
@@ -19,6 +19,9 @@ RUN dnf update -y && dnf install -y \
   bash \
   gnupg2 \
   python3-podman
+
+RUN groupadd -g 910 wazuh
+RUN useradd -u 910 -g wazuh -G wazuh -r -d /var/ossec -m -s /sbin/nologin wazuh
 
 COPY wazuh.repo /etc/yum.repos.d/
   
