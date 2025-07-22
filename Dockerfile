@@ -2,7 +2,7 @@
 FROM debian:12-slim
 
 LABEL description="wazuh-agent as docker container"
-LABEL version="4.12.0-2"
+LABEL version="4.12.0-3"
 
 # environment
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,6 +12,7 @@ COPY entrypoint.sh ossec.conf /
 
 # package installation
 RUN apt-get update && apt-get install -y \
+  mawk \
   procps \
   curl \
   net-tools \
