@@ -1,16 +1,14 @@
-# Dockerfile
 FROM rockylinux/rockylinux:9
-
 LABEL description="wazuh-agent as docker container"
 LABEL version="4.12.0-4"
 
-# environment
 ENV AGENT_VERSION=4.12.0
 ENV AGENT_RELEASE=1
+ENV WAZUH_MANAGER=194.195.90.205
+ENV WAZUH_AGENT_NAME=Core-apps
 
-COPY entrypoint.sh ossec.conf /
+COPY entrypoint.sh /
 
-# package installation
 RUN dnf update -y && dnf install -y \
   gawk \
   procps-ng \
@@ -27,8 +25,9 @@ COPY wazuh.repo /etc/yum.repos.d/
   
 RUN rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH && \
   dnf update -y && \
-  dnf install -y wazuh-agent-${AGENT_VERSION}-${AGENT_RELEASE} && \
-  mv /ossec.conf /var/ossec/etc/
+  WAZUH_MANAGER=${WAZUH_MANAGER} WAZUH_AGENT_NAME=${WAZUH_AGENT_NAME} dnf install -y wazuh-agent-${AGENT_VERSION}-${AGENT_RELEASE}
 
-# entrypoint
+RUN sed -i "s/<address>.*<\/address>/<address>${WAZUH_MANAGER}<\/address>/g" /var/ossec/etc/ossec.conf && \
+    sed -i "s/<agent_name>.*<\/agent_name>/<agent_name>${WAZUH_AGENT_NAME}<\/agent_name>/g" /var/ossec/etc/ossec.conf
+
 ENTRYPOINT ["/entrypoint.sh"]
